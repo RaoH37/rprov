@@ -38,6 +38,22 @@ func splitIdOrName(key string) (string, string) {
 	return "", key
 }
 
+func getAccountId(zcs *zadmin.ZAdmin, key string) (string, error) {
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetAccountRequest(id, name, zimbraCommon.StringList{"zimbraId"}, false)
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(response.Content.Account) == 0 || response.Content.Account[0].ID == "" {
+		return "", fmt.Errorf("no such account: %s", key)
+	}
+
+	return response.Content.Account[0].ID, nil
+}
+
 func buildAttrs(args []string, keepModifiers bool) (zimbraCommon.AttrsNode, error) {
 	if len(args)%2 != 0 {
 		return nil, fmt.Errorf("attribute %q has no value", args[len(args)-1])
