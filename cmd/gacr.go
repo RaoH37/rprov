@@ -7,16 +7,14 @@ import (
 )
 
 var gacrCmd = &cobra.Command{
-	Use:     "gacr [domain]", // [domain] in brackets means optional
+	Use:     "gacr [domain]",
 	Aliases: []string{"GetAllCalendarResources"},
 	Short:   "Get All Calendar Resources",
 	Long:    `List all calendar resources.`,
 
-	// Positional argument validation
-	// At most 1 argument (the domain)
 	Args: cobra.MaximumNArgs(1),
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		domain := ""
 		if len(args) > 0 {
 			domain = args[0]
@@ -28,23 +26,15 @@ var gacrCmd = &cobra.Command{
 
 		conf, err := loadConfig()
 		if err != nil {
-			return
+			return err
 		}
 
-		admin.GetAllCalendarResources(conf, domain, attributes)
+		return admin.GetAllCalendarResources(conf, domain, attributes)
 	},
 }
 
 func init() {
-	// Register the command on the root
 	rootCmd.AddCommand(gacrCmd)
 
-	// Flag definitions for 'gaa'
-	// StringSliceVarP allows passing the same flag several times: --attr sn --attr cn
-	// Or comma-separated: --attr sn,cn
-	// "attributes": long name
-	// "a": shorthand -a
-	// []string{}: default value (empty)
-	// "description"
 	gacrCmd.Flags().StringSliceVarP(&attributes, "attr", "a", []string{}, "Attributes to display")
 }

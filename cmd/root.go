@@ -12,21 +12,25 @@ var serverURL string
 var authLogin string
 var authPassword string
 
-// Variables holding the flag values
 var attributes []string
 
 var rootCmd = &cobra.Command{
 	Use:   "rprov",
 	Short: "zmprov clone written in Go",
+
+	SilenceErrors: true,
+
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		cmd.SilenceUsage = true
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		// Default action when no subcommand is given
 		fmt.Println("Use 'rprov help' to see the available commands.")
 	},
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintln(os.Stderr, "ERROR:", err)
 		os.Exit(1)
 	}
 }
@@ -60,13 +64,11 @@ func init() {
 func loadConfig() (map[string]string, error) {
 	path, err := config.FindLocalConfig()
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
 		return nil, err
 	}
 
 	conf, err := config.ParseLocalConfig(path)
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
 		return nil, err
 	}
 	conf["zimbra_admin_service_url"] = serverURL

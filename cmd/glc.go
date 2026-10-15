@@ -15,19 +15,18 @@ var glcCmd = &cobra.Command{
 	Use:     "glc",
 	Aliases: []string{"getLocalConfig"},
 	Short:   "Display the values read from localconfig.xml",
-	Long:    `todo`,
+	Long: `Display the keys and values read from localconfig.xml (/opt/zimbra/conf or /opt/zextras/conf), sorted by key.
+Values of keys ending in _password are masked unless --secrets is given.`,
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		path, err := config.FindLocalConfig()
 		if err != nil {
-			fmt.Printf("Error: %v\n", err)
-			return
+			return err
 		}
 
 		conf, err := config.ParseLocalConfig(path)
 		if err != nil {
-			fmt.Printf("Error: %v\n", err)
-			return
+			return err
 		}
 
 		keys := make([]string, 0, len(conf))
@@ -43,6 +42,8 @@ var glcCmd = &cobra.Command{
 			}
 			fmt.Printf("%s = %s\n", k, v)
 		}
+
+		return nil
 	},
 }
 

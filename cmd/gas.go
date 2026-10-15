@@ -7,16 +7,14 @@ import (
 )
 
 var gasCmd = &cobra.Command{
-	Use:     "gas", // [domain] in brackets means optional
+	Use:     "gas [service]",
 	Aliases: []string{"GetAllServers"},
 	Short:   "Get All Servers",
-	Long:    `todo`,
+	Long:    `List all servers. If a service is given (e.g. mailbox, mta, proxy), list only the servers running that service.`,
 
-	// Positional argument validation
-	// At most 1 argument (the domain)
 	Args: cobra.MaximumNArgs(1),
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		service := ""
 		if len(args) > 0 {
 			service = args[0]
@@ -24,10 +22,10 @@ var gasCmd = &cobra.Command{
 
 		conf, err := loadConfig()
 		if err != nil {
-			return
+			return err
 		}
 
-		admin.GetAllServers(conf, service)
+		return admin.GetAllServers(conf, service)
 	},
 }
 

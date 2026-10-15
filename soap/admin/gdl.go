@@ -7,15 +7,23 @@ import (
 	"github.com/RaoH37/gosoap/zimbraCommon"
 )
 
-func GetDistributionList(conf map[string]string, name string, attributes []string) {
-	zcs := Authenticate(conf)
+func GetDistributionList(conf map[string]string, name string, attributes []string) error {
+	zcs, err := Authenticate(conf)
+
+	if err != nil {
+		return err
+	}
 
 	attrs := zimbraCommon.StringList(attributes)
 
 	response, err := zcs.GetDistributionListRequest("", name, attrs)
 
 	if err != nil {
-		panic(err)
+		return err
+	}
+
+	if len(response.Content.Dl) == 0 {
+		return fmt.Errorf("no such distribution list: %s", name)
 	}
 
 	dl := response.Content.Dl[0]
@@ -29,11 +37,7 @@ func GetDistributionList(conf map[string]string, name string, attributes []strin
 	for i := 0; i < len(dl.Attrs); i++ {
 		attr := dl.Attrs[i]
 		outputAttr(attr)
-
-		//if attr.Name == "zimbraCOSId" {
-		//	if cosName, cosErr := getCosName(zcs, attr.Value); cosErr == nil {
-		//		fmt.Printf("zimbraCOSName: %v\n", cosName)
-		//	}
-		//}
 	}
+
+	return nil
 }

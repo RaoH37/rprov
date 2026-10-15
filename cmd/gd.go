@@ -7,24 +7,25 @@ import (
 )
 
 var gdCmd = &cobra.Command{
-	Use:     "gd name",
+	Use:     "gd name [attr1 [attr2...]]",
 	Aliases: []string{"GetDomain"},
 	Short:   "Get Domain Attributes",
-	Long:    `todo`,
+	Long: `Display the attributes of a domain, sorted by name. If attributes are given, display only those.
+The zimbraDomainDefaultCOSId attribute is followed by the matching zimbraDomainDefaultCOSName.`,
 
 	Args: cobra.MinimumNArgs(1),
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		name := args[0]
 
 		args = append(args[:0], args[1:]...)
 
 		conf, err := loadConfig()
 		if err != nil {
-			return
+			return err
 		}
 
-		admin.GetDomain(conf, name, args)
+		return admin.GetDomain(conf, name, args)
 	},
 }
 

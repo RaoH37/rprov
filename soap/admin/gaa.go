@@ -7,8 +7,12 @@ import (
 	"github.com/RaoH37/gosoap/zimbraCommon"
 )
 
-func GetAllAccounts(conf map[string]string, domain string, attributes []string) {
-	zcs := Authenticate(conf)
+func GetAllAccounts(conf map[string]string, domain string, attributes []string) error {
+	zcs, err := Authenticate(conf)
+
+	if err != nil {
+		return err
+	}
 
 	types := zimbraAdmin.SearchTypeList{
 		zimbraAdmin.SearchTypeAccounts,
@@ -17,13 +21,12 @@ func GetAllAccounts(conf map[string]string, domain string, attributes []string) 
 	attrs := zimbraCommon.StringList(attributes)
 
 	offset := 0
-	//limit := 500
 
 	for {
 		response, err := zcs.SearchDirectoryRequest("", 1_000_000, searchLimit, offset, domain, false, false, "mail", types, true, attrs, false)
 
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		for i := 0; i < len(response.Content.Accounts); i++ {
@@ -36,4 +39,6 @@ func GetAllAccounts(conf map[string]string, domain string, attributes []string) 
 
 		offset += searchLimit
 	}
+
+	return nil
 }

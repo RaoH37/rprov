@@ -3,3 +3,4 @@ conf/
 go.work
 go.work.sum
 .idea/
+CLAUDE.md

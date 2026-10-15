@@ -7,24 +7,25 @@ import (
 )
 
 var gaCmd = &cobra.Command{
-	Use:     "ga name",
+	Use:     "ga name [attr1 [attr2...]]",
 	Aliases: []string{"GetAccount"},
 	Short:   "Get Account Attributes",
-	Long:    `todo`,
+	Long: `Display the attributes of an account, sorted by name. If attributes are given, display only those.
+The zimbraCOSId attribute is followed by the matching zimbraCOSName.`,
 
 	Args: cobra.MinimumNArgs(1),
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		name := args[0]
 
 		args = append(args[:0], args[1:]...)
 
 		conf, err := loadConfig()
 		if err != nil {
-			return
+			return err
 		}
 
-		admin.GetAccount(conf, name, args)
+		return admin.GetAccount(conf, name, args)
 	},
 }
 

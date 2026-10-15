@@ -24,7 +24,5 @@ func getCosName(zcs *zadmin.ZAdmin, id string) (string, error) {
 		return "", fmt.Errorf("no such cos with id %s", id)
 	}
 
-	//fmt.Printf("%w\n", response.Content.Cos[0].Name)
-
 	return response.Content.Cos[0].Name, nil
 }

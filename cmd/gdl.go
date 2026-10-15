@@ -7,24 +7,24 @@ import (
 )
 
 var gdlCmd = &cobra.Command{
-	Use:     "gdl name",
+	Use:     "gdl name [attr1 [attr2...]]",
 	Aliases: []string{"GetDistributionList"},
 	Short:   "Get DistributionList Attributes",
-	Long:    `todo`,
+	Long:    `Display the attributes of a distribution list, sorted by name. If attributes are given, display only those.`,
 
 	Args: cobra.MinimumNArgs(1),
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		name := args[0]
 
 		args = append(args[:0], args[1:]...)
 
 		conf, err := loadConfig()
 		if err != nil {
-			return
+			return err
 		}
 
-		admin.GetDistributionList(conf, name, args)
+		return admin.GetDistributionList(conf, name, args)
 	},
 }
 

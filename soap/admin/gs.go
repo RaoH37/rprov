@@ -7,15 +7,23 @@ import (
 	"github.com/RaoH37/gosoap/zimbraCommon"
 )
 
-func GetServer(conf map[string]string, name string, attributes []string) {
-	zcs := Authenticate(conf)
+func GetServer(conf map[string]string, name string, attributes []string) error {
+	zcs, err := Authenticate(conf)
+
+	if err != nil {
+		return err
+	}
 
 	attrs := zimbraCommon.StringList(attributes)
 
 	response, err := zcs.GetServerRequest("", name, attrs, true)
 
 	if err != nil {
-		panic(err)
+		return err
+	}
+
+	if len(response.Content.Server) == 0 {
+		return fmt.Errorf("no such server: %s", name)
 	}
 
 	server := response.Content.Server[0]
@@ -30,4 +38,6 @@ func GetServer(conf map[string]string, name string, attributes []string) {
 		attr := server.Attrs[i]
 		outputAttr(attr)
 	}
+
+	return nil
 }

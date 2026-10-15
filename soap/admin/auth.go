@@ -1,8 +1,12 @@
 package admin
 
-import "github.com/RaoH37/gosoap/zadmin"
+import (
+	"errors"
 
-func Authenticate(conf map[string]string) *zadmin.ZAdmin {
+	"github.com/RaoH37/gosoap/zadmin"
+)
+
+func Authenticate(conf map[string]string) (*zadmin.ZAdmin, error) {
 	zcs := zadmin.NewZAdmin(
 		conf["zimbra_admin_service_url"],
 		conf["zimbra_admin_auth_login"],
@@ -13,12 +17,16 @@ func Authenticate(conf map[string]string) *zadmin.ZAdmin {
 	resp, err := zcs.AuthRequest()
 
 	if err != nil {
-		panic(err)
+		return nil, err
+	}
+
+	if len(resp.Content.TOKEN) == 0 {
+		return nil, errors.New("authentication response contains no token")
 	}
 
 	zcs.SetToken(resp.Content.TOKEN[0].Content)
 
-	return zcs
+	return zcs, nil
 }
 
 func getPassword(conf map[string]string) string {

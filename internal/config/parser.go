@@ -6,7 +6,6 @@ import (
 	"os"
 )
 
-// Structure matching the Zimbra localconfig.xml format
 type LocalConfig struct {
 	XMLName xml.Name `xml:"localconfig"`
 	Keys    []Key    `xml:"key"`
@@ -17,7 +16,6 @@ type Key struct {
 	Value string `xml:"value"`
 }
 
-// ParseLocalConfig reads the file and returns a map for easy access
 func ParseLocalConfig(filePath string) (map[string]string, error) {
 	xmlFile, err := os.Open(filePath)
 	if err != nil {
@@ -33,7 +31,6 @@ func ParseLocalConfig(filePath string) (map[string]string, error) {
 		return nil, err
 	}
 
-	// Turn the list into a map for faster key lookup
 	configMap := make(map[string]string)
 	for _, k := range config.Keys {
 		configMap[k.Name] = k.Value

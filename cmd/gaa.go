@@ -7,16 +7,14 @@ import (
 )
 
 var gaaCmd = &cobra.Command{
-	Use:     "gaa [domain]", // [domain] in brackets means optional
+	Use:     "gaa [domain]",
 	Aliases: []string{"GetAllAccounts"},
 	Short:   "Get All Accounts",
 	Long:    `List all accounts. If a domain is given, list only the accounts of that domain.`,
 
-	// Positional argument validation
-	// At most 1 argument (the domain)
 	Args: cobra.MaximumNArgs(1),
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		domain := ""
 		if len(args) > 0 {
 			domain = args[0]
@@ -28,23 +26,13 @@ var gaaCmd = &cobra.Command{
 
 		conf, err := loadConfig()
 		if err != nil {
-			return
+			return err
 		}
 
-		admin.GetAllAccounts(conf, domain, attributes)
+		return admin.GetAllAccounts(conf, domain, attributes)
 	},
 }
 
 func init() {
-	// Register the command on the root
 	rootCmd.AddCommand(gaaCmd)
-
-	// Flag definitions for 'gaa'
-	// StringSliceVarP allows passing the same flag several times: --attr sn --attr cn
-	// Or comma-separated: --attr sn,cn
-	// "attributes": long name
-	// "a": shorthand -a
-	// []string{}: default value (empty)
-	// "description"
-	//gaaCmd.Flags().StringSliceVarP(&attributes, "attr", "a", []string{}, "Attributes to display")
 }

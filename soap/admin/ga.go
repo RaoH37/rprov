@@ -7,15 +7,23 @@ import (
 	"github.com/RaoH37/gosoap/zimbraCommon"
 )
 
-func GetAccount(conf map[string]string, name string, attributes []string) {
-	zcs := Authenticate(conf)
+func GetAccount(conf map[string]string, name string, attributes []string) error {
+	zcs, err := Authenticate(conf)
+
+	if err != nil {
+		return err
+	}
 
 	attrs := zimbraCommon.StringList(attributes)
 
 	response, err := zcs.GetAccountRequest("", name, attrs, true)
 
 	if err != nil {
-		panic(err)
+		return err
+	}
+
+	if len(response.Content.Account) == 0 {
+		return fmt.Errorf("no such account: %s", name)
 	}
 
 	account := response.Content.Account[0]
@@ -36,4 +44,6 @@ func GetAccount(conf map[string]string, name string, attributes []string) {
 			}
 		}
 	}
+
+	return nil
 }
