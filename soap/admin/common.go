@@ -130,6 +130,20 @@ func validateAddress(address string) error {
 	return nil
 }
 
+func validateAddresses(addresses []string) error {
+	if len(addresses) == 0 {
+		return fmt.Errorf("no address given")
+	}
+
+	for _, address := range addresses {
+		if err := validateAddress(address); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func buildAttrs(args []string, keepModifiers bool) (zimbraCommon.AttrsNode, error) {
 	if len(args)%2 != 0 {
 		return nil, fmt.Errorf("attribute %q has no value", args[len(args)-1])

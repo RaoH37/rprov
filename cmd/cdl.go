@@ -24,7 +24,7 @@ var cdlCmd = &cobra.Command{
 			return err
 		}
 
-		return admin.CreateDistributionList(conf, name, args)
+		return admin.CreateDistributionList(conf, name, false, args)
 	},
 }
 

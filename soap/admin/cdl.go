@@ -2,7 +2,7 @@ package admin
 
 import "fmt"
 
-func CreateDistributionList(conf map[string]string, name string, attributes []string) error {
+func CreateDistributionList(conf map[string]string, name string, dynamic bool, attributes []string) error {
 	if err := validateAddress(name); err != nil {
 		return err
 	}
@@ -19,7 +19,7 @@ func CreateDistributionList(conf map[string]string, name string, attributes []st
 		return err
 	}
 
-	response, err := zcs.CreateDistributionListRequest(name, false, attrs)
+	response, err := zcs.CreateDistributionListRequest(name, dynamic, attrs)
 
 	if err != nil {
 		return err
