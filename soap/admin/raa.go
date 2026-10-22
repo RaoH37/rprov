@@ -1,7 +1,7 @@
 package admin
 
 func RemoveAccountAlias(conf map[string]string, key string, alias string) error {
-	if err := validateAlias(alias); err != nil {
+	if err := validateAddress(alias); err != nil {
 		return err
 	}
 

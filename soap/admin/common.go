@@ -56,11 +56,11 @@ func getAccountId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	return response.Content.Account[0].ID, nil
 }
 
-func validateAlias(alias string) error {
-	local, domain, found := strings.Cut(alias, "@")
+func validateAddress(address string) error {
+	local, domain, found := strings.Cut(address, "@")
 
-	if !found || local == "" || domain == "" || strings.Contains(domain, "@") || strings.ContainsFunc(alias, unicode.IsSpace) {
-		return fmt.Errorf("invalid alias %q: expected alias@domain", alias)
+	if !found || local == "" || domain == "" || strings.Contains(domain, "@") || strings.ContainsFunc(address, unicode.IsSpace) {
+		return fmt.Errorf("invalid address %q: expected name@domain", address)
 	}
 
 	return nil
