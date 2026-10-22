@@ -56,6 +56,30 @@ func getAccountId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	return response.Content.Account[0].ID, nil
 }
 
+func getDomainId(zcs *zadmin.ZAdmin, key string) (string, error) {
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetDomainRequest(id, name, zimbraCommon.StringList{"zimbraId"}, false)
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(response.Content.Domains) == 0 || response.Content.Domains[0].ID == "" {
+		return "", fmt.Errorf("no such domain: %s", key)
+	}
+
+	return response.Content.Domains[0].ID, nil
+}
+
+func validateDomainName(name string) error {
+	if name == "" || strings.Contains(name, "@") || strings.ContainsFunc(name, unicode.IsSpace) {
+		return fmt.Errorf("invalid domain name %q", name)
+	}
+
+	return nil
+}
+
 func validateAddress(address string) error {
 	local, domain, found := strings.Cut(address, "@")
 
