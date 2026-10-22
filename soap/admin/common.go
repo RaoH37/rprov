@@ -3,6 +3,8 @@ package admin
 import (
 	"fmt"
 	"regexp"
+	"strings"
+	"unicode"
 
 	"github.com/RaoH37/gosoap/zadmin"
 	"github.com/RaoH37/gosoap/zimbraCommon"
@@ -52,6 +54,16 @@ func getAccountId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	}
 
 	return response.Content.Account[0].ID, nil
+}
+
+func validateAlias(alias string) error {
+	local, domain, found := strings.Cut(alias, "@")
+
+	if !found || local == "" || domain == "" || strings.Contains(domain, "@") || strings.ContainsFunc(alias, unicode.IsSpace) {
+		return fmt.Errorf("invalid alias %q: expected alias@domain", alias)
+	}
+
+	return nil
 }
 
 func buildAttrs(args []string, keepModifiers bool) (zimbraCommon.AttrsNode, error) {
