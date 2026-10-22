@@ -3,7 +3,7 @@
 Status of the zmprov commands in rprov, and whether the local gosoap library
 can support the missing ones.
 
-- Last updated: 2026-10-22 (after adding `ms`)
+- Last updated: 2026-10-22 (after adding `-f`)
 - gosoap state: commit `47b483e` (local checkout, see `go.work`)
 - The zmprov command list is based on `zmprov help all` from Zimbra 8.8/10, written
   from memory. Check it against a real `zmprov` before relying on it.
@@ -158,7 +158,18 @@ None of these is implemented, and gosoap has none of their requests.
 | UC services | `cucs`, `ducs`, `gucs`, `gaucs`, `mucs`, `rucs` |
 | XMPP components (removed in recent versions) | `cxc`, `dxc`, `gxc`, `gaxcs`, `mxc` |
 | Calendar cache | `pacc` (purgeAccountCalendarCache) |
-| zmprov shell | `desc` (describe), `help`, `exit`, interactive mode, `-f` (read commands from a file) |
+| zmprov shell | `desc` (describe), `exit`, interactive mode, reading commands from stdin |
+
+## Batch mode
+
+`rprov -f file` runs the commands of a file, one per line, like `zmprov -f`:
+
+- a single authentication for the whole file;
+- empty lines and lines starting with `#` are skipped;
+- arguments can be quoted with `'` or `"` (with `\"` and `\\` escapes), `""` gives an empty value;
+- a failed line is reported as `ERROR: line N: ...` (the line content is never printed, it may hold a password) and the next lines still run;
+- an authentication failure stops the batch, to avoid locking the admin account with repeated attempts;
+- the exit code is 1 if any line failed.
 
 ## rprov-only commands
 
