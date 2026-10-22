@@ -88,6 +88,22 @@ func getDistributionListId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	return response.Content.Dl[0].ID, nil
 }
 
+func getCalendarResourceId(zcs *zadmin.ZAdmin, key string) (string, error) {
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetCalendarResourceRequest(id, name, zimbraCommon.StringList{"zimbraId"}, false)
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(response.Content.CalResource) == 0 || response.Content.CalResource[0].ID == "" {
+		return "", fmt.Errorf("no such calendar resource: %s", key)
+	}
+
+	return response.Content.CalResource[0].ID, nil
+}
+
 func getCosId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	id, name := splitIdOrName(key)
 
