@@ -18,6 +18,8 @@ var glcCmd = &cobra.Command{
 	Long: `Display the keys and values read from localconfig.xml (/opt/zimbra/conf or /opt/zextras/conf), sorted by key.
 Values of keys ending in _password are masked unless --secrets is given.`,
 
+	Args: cobra.NoArgs,
+
 	RunE: func(cmd *cobra.Command, args []string) error {
 		path, err := config.FindLocalConfig()
 		if err != nil {
