@@ -72,6 +72,30 @@ func getDomainId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	return response.Content.Domains[0].ID, nil
 }
 
+func getCosId(zcs *zadmin.ZAdmin, key string) (string, error) {
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetCosRequest(id, name, zimbraCommon.StringList{"zimbraId"})
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(response.Content.Cos) == 0 || response.Content.Cos[0].ID == "" {
+		return "", fmt.Errorf("no such cos: %s", key)
+	}
+
+	return response.Content.Cos[0].ID, nil
+}
+
+func validateCosName(name string) error {
+	if name == "" || strings.ContainsFunc(name, unicode.IsSpace) {
+		return fmt.Errorf("invalid cos name %q", name)
+	}
+
+	return nil
+}
+
 func validateDomainName(name string) error {
 	if name == "" || strings.Contains(name, "@") || strings.ContainsFunc(name, unicode.IsSpace) {
 		return fmt.Errorf("invalid domain name %q", name)
