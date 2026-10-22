@@ -3,7 +3,7 @@
 Status of the zmprov commands in rprov, and whether the local gosoap library
 can support the missing ones.
 
-- rprov state: commit `2842eb8`
+- Last updated: 2026-10-22 (after adding `ms`)
 - gosoap state: commit `47b483e` (local checkout, see `go.work`)
 - The zmprov command list is based on `zmprov help all` from Zimbra 8.8/10, written
   from memory. Check it against a real `zmprov` before relying on it.
@@ -31,7 +31,7 @@ first with a `get<Object>Id` helper from `soap/admin/common.go`.
 | COS | 7 | 0 | 0 |
 | Distribution lists | 11 | 0 | 1 |
 | Calendar resources | 6 | 1 (`scr`, approximate) | 0 |
-| Servers | 2 | 5 (`ms`, `gamau`, `garpu`, `garpb`, `gamcs`) | 7 |
+| Servers | 3 | 4 (`gamau`, `garpu`, `garpb`, `gamcs`) | 7 |
 | Other categories | 0 | 0 | all |
 
 ## Accounts
@@ -127,7 +127,7 @@ first with a `get<Object>Id` helper from `soap/admin/common.go`.
 |---|---|---|---|---|
 | `gs` | getServer | ✅ | — | Name or zimbraId |
 | `gas` | getAllServers | ✅ | — | |
-| `ms` | modifyServer | ❌ | ✅ | `ModifyServerRequest`, ID only |
+| `ms` | modifyServer | ✅ | — | |
 | `gamau` | getAllMtaAuthURLs | ❌ | ⚠️ | From `GetAllServersRequest`; selection criteria and output format to check against zmprov |
 | `garpu` | getAllReverseProxyURLs | ❌ | ⚠️ | Same |
 | `garpb` | getAllReverseProxyBackends | ❌ | ⚠️ | Same |

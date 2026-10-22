@@ -1,10 +1,6 @@
 package admin
 
-import (
-	"fmt"
-
-	"github.com/RaoH37/gosoap/zimbraCommon"
-)
+import "fmt"
 
 func GetQuotaUsage(conf map[string]string, key string) error {
 	zcs, err := Authenticate(conf)
@@ -13,19 +9,13 @@ func GetQuotaUsage(conf map[string]string, key string) error {
 		return err
 	}
 
-	id, name := splitIdOrName(key)
-
-	servers, err := zcs.GetServerRequest(id, name, zimbraCommon.StringList{"zimbraId"}, false)
+	serverId, err := getServerId(zcs, key)
 
 	if err != nil {
 		return err
 	}
 
-	if len(servers.Content.Server) == 0 || servers.Content.Server[0].ID == "" {
-		return fmt.Errorf("no such server: %s", key)
-	}
-
-	response, err := zcs.GetQuotaUsageRequest(servers.Content.Server[0].ID, "", false)
+	response, err := zcs.GetQuotaUsageRequest(serverId, "", false)
 
 	if err != nil {
 		return err

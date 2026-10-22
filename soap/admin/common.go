@@ -104,6 +104,22 @@ func getCalendarResourceId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	return response.Content.CalResource[0].ID, nil
 }
 
+func getServerId(zcs *zadmin.ZAdmin, key string) (string, error) {
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetServerRequest(id, name, zimbraCommon.StringList{"zimbraId"}, false)
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(response.Content.Server) == 0 || response.Content.Server[0].ID == "" {
+		return "", fmt.Errorf("no such server: %s", key)
+	}
+
+	return response.Content.Server[0].ID, nil
+}
+
 func getCosId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	id, name := splitIdOrName(key)
 
