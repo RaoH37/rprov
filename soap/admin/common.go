@@ -72,6 +72,22 @@ func getDomainId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	return response.Content.Domains[0].ID, nil
 }
 
+func getDistributionListId(zcs *zadmin.ZAdmin, key string) (string, error) {
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetDistributionListRequest(id, name, zimbraCommon.StringList{"zimbraId"})
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(response.Content.Dl) == 0 || response.Content.Dl[0].ID == "" {
+		return "", fmt.Errorf("no such distribution list: %s", key)
+	}
+
+	return response.Content.Dl[0].ID, nil
+}
+
 func getCosId(zcs *zadmin.ZAdmin, key string) (string, error) {
 	id, name := splitIdOrName(key)
 
