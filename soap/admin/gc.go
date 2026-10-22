@@ -7,7 +7,7 @@ import (
 	"github.com/RaoH37/gosoap/zimbraCommon"
 )
 
-func GetCos(conf map[string]string, name string, attributes []string) error {
+func GetCos(conf map[string]string, key string, attributes []string) error {
 	zcs, err := Authenticate(conf)
 
 	if err != nil {
@@ -16,14 +16,16 @@ func GetCos(conf map[string]string, name string, attributes []string) error {
 
 	attrs := zimbraCommon.StringList(attributes)
 
-	response, err := zcs.GetCosRequest("", name, attrs)
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetCosRequest(id, name, attrs)
 
 	if err != nil {
 		return err
 	}
 
 	if len(response.Content.Cos) == 0 {
-		return fmt.Errorf("no such cos: %s", name)
+		return fmt.Errorf("no such cos: %s", key)
 	}
 
 	cos := response.Content.Cos[0]

@@ -7,15 +7,15 @@ import (
 )
 
 var gcCmd = &cobra.Command{
-	Use:     "gc name [attr1 [attr2...]]",
+	Use:     "gc {name|id} [attr1 [attr2...]]",
 	Aliases: []string{"GetCos"},
 	Short:   "Get Cos Attributes",
-	Long:    `Display the attributes of a class of service (COS), sorted by name. If attributes are given, display only those.`,
+	Long:    `Display the attributes of a class of service (COS), given by name or zimbraId, sorted by name. If attributes are given, display only those.`,
 
 	Args: cobra.MinimumNArgs(1),
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		name := args[0]
+		key := args[0]
 
 		args = append(args[:0], args[1:]...)
 
@@ -24,7 +24,7 @@ var gcCmd = &cobra.Command{
 			return err
 		}
 
-		return admin.GetCos(conf, name, args)
+		return admin.GetCos(conf, key, args)
 	},
 }
 

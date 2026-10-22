@@ -7,15 +7,15 @@ import (
 )
 
 var gsCmd = &cobra.Command{
-	Use:     "gs name [attr1 [attr2...]]",
+	Use:     "gs {name|id} [attr1 [attr2...]]",
 	Aliases: []string{"GetServer"},
 	Short:   "Get Server Attributes",
-	Long:    `Display the attributes of a server, sorted by name. If attributes are given, display only those.`,
+	Long:    `Display the attributes of a server, given by name or zimbraId, sorted by name. If attributes are given, display only those.`,
 
 	Args: cobra.MinimumNArgs(1),
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		name := args[0]
+		key := args[0]
 
 		args = append(args[:0], args[1:]...)
 
@@ -24,7 +24,7 @@ var gsCmd = &cobra.Command{
 			return err
 		}
 
-		return admin.GetServer(conf, name, args)
+		return admin.GetServer(conf, key, args)
 	},
 }
 

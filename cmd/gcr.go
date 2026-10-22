@@ -7,16 +7,16 @@ import (
 )
 
 var gcrCmd = &cobra.Command{
-	Use:     "gcr name [attr1 [attr2...]]",
+	Use:     "gcr {name@domain|id} [attr1 [attr2...]]",
 	Aliases: []string{"GetCalendarResource"},
 	Short:   "Get Calendar Resource Attributes",
-	Long: `Display the attributes of a calendar resource, sorted by name. If attributes are given, display only those.
+	Long: `Display the attributes of a calendar resource, given by name or zimbraId, sorted by name. If attributes are given, display only those.
 The zimbraCOSId attribute is followed by the matching zimbraCOSName.`,
 
 	Args: cobra.MinimumNArgs(1),
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		name := args[0]
+		key := args[0]
 
 		args = append(args[:0], args[1:]...)
 
@@ -25,7 +25,7 @@ The zimbraCOSId attribute is followed by the matching zimbraCOSName.`,
 			return err
 		}
 
-		return admin.GetCalendarResource(conf, name, args)
+		return admin.GetCalendarResource(conf, key, args)
 	},
 }
 

@@ -7,7 +7,7 @@ import (
 	"github.com/RaoH37/gosoap/zimbraCommon"
 )
 
-func GetDistributionList(conf map[string]string, name string, attributes []string) error {
+func GetDistributionList(conf map[string]string, key string, attributes []string) error {
 	zcs, err := Authenticate(conf)
 
 	if err != nil {
@@ -16,14 +16,16 @@ func GetDistributionList(conf map[string]string, name string, attributes []strin
 
 	attrs := zimbraCommon.StringList(attributes)
 
-	response, err := zcs.GetDistributionListRequest("", name, attrs)
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetDistributionListRequest(id, name, attrs)
 
 	if err != nil {
 		return err
 	}
 
 	if len(response.Content.Dl) == 0 {
-		return fmt.Errorf("no such distribution list: %s", name)
+		return fmt.Errorf("no such distribution list: %s", key)
 	}
 
 	dl := response.Content.Dl[0]

@@ -7,7 +7,7 @@ import (
 	"github.com/RaoH37/gosoap/zimbraCommon"
 )
 
-func GetCalendarResource(conf map[string]string, name string, attributes []string) error {
+func GetCalendarResource(conf map[string]string, key string, attributes []string) error {
 	zcs, err := Authenticate(conf)
 
 	if err != nil {
@@ -16,14 +16,16 @@ func GetCalendarResource(conf map[string]string, name string, attributes []strin
 
 	attrs := zimbraCommon.StringList(attributes)
 
-	response, err := zcs.GetCalendarResourceRequest("", name, attrs, true)
+	id, name := splitIdOrName(key)
+
+	response, err := zcs.GetCalendarResourceRequest(id, name, attrs, true)
 
 	if err != nil {
 		return err
 	}
 
 	if len(response.Content.CalResource) == 0 {
-		return fmt.Errorf("no such calendar resource: %s", name)
+		return fmt.Errorf("no such calendar resource: %s", key)
 	}
 
 	resource := response.Content.CalResource[0]
